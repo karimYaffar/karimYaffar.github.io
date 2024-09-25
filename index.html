@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifrado César y Escítala</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+       body {
+    font-family: 'Source Sans Pro', sans-serif;
+    background-image: url("imagenes/div.jpg"); /* Fondo de imagen */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #ffffff;
+    min-height: 100vh; /* Asegura que el cuerpo ocupe el 100% de la altura de la ventana */
+    margin: 0;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Oscurecer la imagen */
+    z-index: -1;
+}
+
+.navbar {
+    background-color: #24292e; /* Fijo el color del header para mantener su visibilidad */
+    padding: 0.8rem 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+    position: fixed; /* Mantener el header fijo en la parte superior */
+    width: 100%;
+    top: 0;
+    z-index: 10; /* Asegurarse de que esté por encima del resto del contenido */
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    color: white !important;
+}
+
+.navbar-nav .nav-link {
+    color: #c9d1d9 !important;
+    margin-right: 1rem;
+    transition: color 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #58a6ff !important;
+}
+
+.container {
+    max-width: 1000px; /* Ajusta el ancho máximo del contenedor */
+    margin: 120px auto; /* Centrado del contenedor con espacio para el header */
+    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.85); /* Fondo blanco con ligera transparencia */
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    color: #333; /* Color gris oscuro para el texto */
+}
+
+h2, h3 {
+    font-weight: 600;
+    color: #24292e; /* Color oscuro para títulos */
+}
+
+label, p, select, input, textarea {
+    font-size: 1rem;
+    color: #333; /* Color gris oscuro para el texto */
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.9); /* Ligera transparencia en campos de texto */
+    color: #333;
+    border-radius: 4px;
+}
+
+.form-control::placeholder {
+    color: #666; /* Color para los placeholders */
+}
+
+.btn-custom {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-success-custom {
+    background-color: #2ea043;
+    color: white;
+}
+
+.btn-success-custom:hover {
+    background-color: transparent;
+    color: #2ea043;
+    border: 1px solid #2ea043;
+}
+
+.btn-warning-custom {
+    background-color: #d29922;
+    color: white;
+}
+
+.btn-warning-custom:hover {
+    background-color: transparent;
+    color: #d29922;
+    border: 1px solid #d29922;
+}
+
+.btn-primary-custom {
+    background-color: #0969da;
+    color: white;
+}
+
+.btn-primary-custom:hover {
+    background-color: transparent;
+    color: #0969da;
+    border: 1px solid #0969da;
+}
+
+.copy-btn {
+    margin-top: 10px;
+}
+
+.alert-info {
+    background-color: #e1ecf4;
+    color: #0366d6;
+}
+
+.modal-body, .modal-header {
+    color: #333;
+}
+
+
+    </style>
+</head>
+<body>
+
+<!-- Navbar fija -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Cifrado César y Escítala</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalInstrucciones">Instrucciones</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 class="text-center">Cifrado César y Escítala</h2>
+
+    <div class="mb-4">
+        <label for="cifradoTipo" class="form-label">Selecciona el tipo de cifrado</label>
+        <select class="form-select" id="cifradoTipo" onchange="cambiarTipoCifrado()">
+            <option value="cesar">Cifrado César</option>
+            <option value="escitala">Cifrado Escítala</option>
+        </select>
+    </div>
+
+    <!-- Sección para el cifrado César -->
+    <div id="cesarSection">
+        <h3>Cifrado César</h3>
+        <div class="mb-3">
+            <label for="cesarMessage" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="cesarMessage" rows="4" placeholder="Ingresa el mensaje aquí..."></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="cesarShift" class="form-label">Desplazamiento</label>
+            <select class="form-select" id="cesarShift">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-success-custom btn-custom" onclick="cifrarCesar()">Cifrar con César</button>
+            <button class="btn btn-warning-custom btn-custom" onclick="descifrarCesar()">Descifrar con César</button>
+        </div>
+    </div>
+
+    <!-- Sección para el cifrado Escítala -->
+    <div id="escitalaSection" style="display:none;">
+        <h3>Cifrado Escítala</h3>
+        <div class="mb-3">
+            <label for="scytaleMessage" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="scytaleMessage" rows="4" placeholder="Ingresa el mensaje aquí..."></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="scytaleColumns" class="form-label">Número de columnas / Grosor de la vara</label>
+            <input type="number" class="form-control" id="scytaleColumns" placeholder="Número de columnas">
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-success-custom btn-custom" onclick="cifrarEscitala()">Cifrar con Escítala</button>
+            <button class="btn btn-warning-custom btn-custom" onclick="descifrarEscitala()">Descifrar con Escítala</button>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3>Resultado:</h3>
+        <div class="alert alert-info" role="alert" id="resultAlert" style="display:none;"></div>
+        <textarea class="form-control" id="result" rows="4" readonly placeholder="El resultado aparecerá aquí..."></textarea>
+        <button class="btn btn-primary-custom btn-custom copy-btn" onclick="copiarResultado()">Copiar</button>
+    </div>
+</div>
+
+<!-- Modal de instrucciones -->
+<div class="modal fade" id="modalInstrucciones" tabindex="-1" aria-labelledby="modalInstruccionesLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalInstruccionesLabel">Instrucciones de uso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Esta aplicación te permite cifrar y descifrar mensajes utilizando dos métodos clásicos:</p>
+                <ul>
+                    <li><strong>Cifrado César</strong>: Desplaza cada letra del mensaje original según el número seleccionado. Por ejemplo, un desplazamiento de 3 convierte "A" en "D".</li>
+                    <li><strong>Cifrado Escítala</strong>: Organiza el mensaje en columnas basadas en el número de columnas especificado. Este método se basa en la transposición de letras en filas y columnas.</li>
+                </ul>
+                <p>Para usar la aplicación:</p>
+                <ol>
+                    <li>Selecciona el tipo de cifrado.</li>
+                    <li>Ingresa el mensaje que deseas cifrar o descifrar.</li>
+                    <li>Para César, elige el número de desplazamiento. Para Escítala, ingresa el número de columnas.</li>
+                    <li>Haz clic en "Cifrar" o "Descifrar" según corresponda.</li>
+                    <li>El resultado aparecerá en el campo de resultado, y podrás copiarlo haciendo clic en el botón "Copiar".</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function cambiarTipoCifrado() {
+        const tipoCifrado = document.getElementById('cifradoTipo').value;
+        if (tipoCifrado === 'cesar') {
+            document.getElementById('cesarSection').style.display = 'block';
+            document.getElementById('escitalaSection').style.display = 'none';
+        } else {
+            document.getElementById('cesarSection').style.display = 'none';
+            document.getElementById('escitalaSection').style.display = 'block';
+        }
+    }
+
+    function cifrarCesar() {
+        let mensaje = document.getElementById('cesarMessage').value;
+        let desplazamiento = parseInt(document.getElementById('cesarShift').value);
+        let resultado = '';
+
+        for (let i = 0; i < mensaje.length; i++) {
+            let char = mensaje[i];
+            if (char.match(/[a-z]/i)) {
+                let codigo = mensaje.charCodeAt(i);
+                let base = (char === char.toLowerCase()) ? 97 : 65;
+                resultado += String.fromCharCode(((codigo - base + desplazamiento) % 26) + base);
+            } else {
+                resultado += char;
+            }
+        }
+        document.getElementById('result').value = resultado;
+        mostrarAlerta(resultado, 'Cifrado César realizado con éxito.');
+    }
+
+    function descifrarCesar() {
+        let mensaje = document.getElementById('cesarMessage').value;
+        let desplazamiento = parseInt(document.getElementById('cesarShift').value);
+        let resultado = '';
+
+        for (let i = 0; i < mensaje.length; i++) {
+            let char = mensaje[i];
+            if (char.match(/[a-z]/i)) {
+                let codigo = mensaje.charCodeAt(i);
+                let base = (char === char.toLowerCase()) ? 97 : 65;
+                resultado += String.fromCharCode(((codigo - base - desplazamiento + 26) % 26) + base);
+            } else {
+                resultado += char;
+            }
+        }
+        document.getElementById('result').value = resultado;
+        mostrarAlerta(resultado, 'Descifrado César realizado con éxito.');
+    }
+
+    function cifrarEscitala() {
+        let mensaje = document.getElementById('scytaleMessage').value.replace(/\s+/g, '');
+        let columnas = parseInt(document.getElementById('scytaleColumns').value);
+        let resultado = '';
+
+        for (let i = 0; i < columnas; i++) {
+            for (let j = i; j < mensaje.length; j += columnas) {
+                resultado += mensaje[j];
+            }
+        }
+        document.getElementById('result').value = resultado;
+        mostrarAlerta(resultado, 'Cifrado Escítala realizado con éxito.');
+    }
+
+    function descifrarEscitala() {
+        let mensaje = document.getElementById('scytaleMessage').value.replace(/\s+/g, '');
+        let columnas = parseInt(document.getElementById('scytaleColumns').value);
+        let filas = Math.ceil(mensaje.length / columnas);
+        let resultado = Array(mensaje.length).fill('');
+
+        let k = 0;
+        for (let i = 0; i < columnas; i++) {
+            for (let j = i; j < mensaje.length; j += columnas) {
+                resultado[j] = mensaje[k];
+                k++;
+            }
+        }
+        document.getElementById('result').value = resultado.join('');
+        mostrarAlerta(resultado.join(''), 'Descifrado Escítala realizado con éxito.');
+    }
+
+    function mostrarAlerta(mensaje, textoAlerta) {
+        const alerta = document.getElementById('resultAlert');
+        alerta.style.display = 'block';
+        alerta.innerHTML = `<strong>${textoAlerta}</strong><br>${mensaje}`;
+    }
+
+    function copiarResultado() {
+        const resultado = document.getElementById('result');
+        resultado.select();
+        document.execCommand('copy');
+        mostrarAlerta(resultado.value, 'Mensaje copiado al portapapeles.');
+    }
+</script>
+</body>
+</html>
